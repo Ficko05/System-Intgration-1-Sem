@@ -1,6 +1,8 @@
 package tcps;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -46,12 +48,9 @@ public class TCPS {
         openSocket = configureServer();
         while(true)
         {
-            Socket s = null;
             try
             {
-                s = serverSocket.accept();
-                //Thread t = new Client(s);
-                //t.start();
+                new ClientHandler(serverSocket.accept()).start();
             }
             catch(Exception e)
             {
@@ -68,49 +67,37 @@ public class TCPS {
         }
     }
 
-    public class Client extends Thread
+    public class ClientHandler extends Thread
     {
-        private Socket OpenSocket = null;
+        private Socket clientSocket;
+        private PrintWriter out;
+        private BufferedReader in;
 
-        public Client(Socket openSocket)
+        public ClientHandler(Socket socket)
         {
-            OpenSocket = openSocket;
+            this.clientSocket = socket;
         }
 
         @Override
         public void run()
         {
             try {
-                String request, response;
+                out = new PrintWriter(clientSocket.getOutputStream(), true);
+                in = new BufferedReader(
+                        new InputStreamReader(clientSocket.getInputStream()));
 
-                // two I/O streams attached to the server socket:
-                Scanner in;         // Scanner is the incoming stream (requests from a client)
-                PrintWriter out;    // PrintWriter is the outcoming stream (the response of the server)
-                in = new Scanner(OpenSocket.getInputStream());
-                out = new PrintWriter(OpenSocket.getOutputStream(),true);
-                // Parameter true ensures automatic flushing of the output buffer
-
-                // Server keeps listening for request and reading data from the Client,
-                // until the Client sends "stop" requests
-                while(in.hasNextLine())
-                {
-                    request = in.nextLine();
-
-                    if(request.equals("stop"))
-                    {
-                        out.println("Good bye, client!");
-                        System.out.println("Log: " + request + " client!");
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    if (".".equals(inputLine)) {
+                        out.println("bye");
                         break;
                     }
-                    else
-                    {
-                        // server responses
-                        response = new StringBuilder(request).reverse().toString();
-                        out.println(response);
-                        // Log response on the server's console, too
-                        System.out.println("Log: " + response);
-                    }
+                    out.println(inputLine);
                 }
+
+                in.close();
+                out.close();
+                clientSocket.close();
             }
             catch (IOException ex) {
                 // Handle exception
