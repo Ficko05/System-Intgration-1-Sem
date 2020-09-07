@@ -11,145 +11,113 @@ import java.util.Scanner;
 /**
  *
  * @author Dora Di
- * 
+ *
  * 1. Create a server socket and bind it to a specific port number
  * 2. Listen for a connection from the client and accept it. This results in a client socket, created on the server, for the connection.
  * 3. Read data from the client via an InputStream obtained from the client socket
  * 4. Send data to the client via the client socket’s OutputStream.
  * 5. Close the connection with the client.
- * 
+ *
  * The steps 3 and 4 can be repeated many times depending on the protocol agreed between the server and the client.
  */
 
-<<<<<<< HEAD
-public class TCPS
-=======
-public class TCPS 
->>>>>>> parent of 7487c75... yuppie ya
-{
+public class TCPS {
     public static final int PORT = 6666;
     public static ServerSocket serverSocket = null; // Server gets found
     public static Socket openSocket = null;         // Server communicates with the client
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> parent of 7487c75... yuppie ya
-    public static Socket configureServer() throws UnknownHostException, IOException
-    {
+    public static Socket configureServer() throws UnknownHostException, IOException {
         // get server's own IP address
         String serverIP = InetAddress.getLocalHost().getHostAddress();
         System.out.println("Server ip: " + serverIP);
-            
+
         // create a socket at the predefined port
-        serverSocket = new ServerSocket(PORT);   
-                    
+        serverSocket = new ServerSocket(PORT);
+
         // Start listening and accepting requests on the serverSocket port, blocked until a request arrives
-        openSocket = serverSocket.accept();  
-        System.out.println("Server accepts requests at: " + openSocket);      
-        
+        openSocket = serverSocket.accept();
+        System.out.println("Server accepts requests at: " + openSocket);
+
         return openSocket;
     }
-<<<<<<< HEAD
-
-    public static void connectClient(Socket openSocket) throws IOException
-    {
-        String request, response;
-
-        // two I/O streams attached to the server socket:
-        Scanner in;         // Scanner is the incoming stream (requests from a client)
-        PrintWriter out;    // PrintWriter is the outcoming stream (the response of the server)
-        in = new Scanner(openSocket.getInputStream());
-        out = new PrintWriter(openSocket.getOutputStream(),true);
-        // Parameter true ensures automatic flushing of the output buffer
-
-        // Server keeps listening for request and reading data from the Client,
-=======
-    
-    public static void connectClient(Socket openSocket) throws IOException 
-    {
-        String request, response;
-        
-        // two I/O streams attached to the server socket:       
-        Scanner in;         // Scanner is the incoming stream (requests from a client)
-        PrintWriter out;    // PrintWriter is the outcoming stream (the response of the server)
-        in = new Scanner(openSocket.getInputStream()); 
-        out = new PrintWriter(openSocket.getOutputStream(),true);
-        // Parameter true ensures automatic flushing of the output buffer
-
-        // Server keeps listening for request and reading data from the Client,  
->>>>>>> parent of 7487c75... yuppie ya
-        // until the Client sends "stop" requests
-        while(in.hasNextLine())
-        {
-            request = in.nextLine();
-
-            if(request.equals("stop"))
-            {
-                out.println("Good bye, client!");
-                System.out.println("Log: " + request + " client!");
-                break;
-            }
-            else
-<<<<<<< HEAD
-            {
-                // server responses
-                response = new StringBuilder(request).reverse().toString();
-                out.println(response);
-=======
-            {        
-                // server responses
-                response = new StringBuilder(request).reverse().toString();
-                out.println(response);   
->>>>>>> parent of 7487c75... yuppie ya
-                // Log response on the server's console, too
-                System.out.println("Log: " + response);
-            }
-        }
-    }
-<<<<<<< HEAD
 
     public static void main(String[] args) throws IOException
     {
-        try
+        openSocket = configureServer();
+        while(true)
         {
-            openSocket = configureServer();
-=======
-    
-    public static void main(String[] args) throws IOException 
-    {       
-        try
-        {
-            openSocket = configureServer();   
->>>>>>> parent of 7487c75... yuppie ya
-            connectClient(openSocket);
-        }
-        catch(Exception e)
-        {
-<<<<<<< HEAD
-            System.out.println(" Connection fails: " + e);
-        }
-        finally
-        {
-            openSocket.close();
-            System.out.println("Connection to client closed");
+            Socket s = null;
+            try
+            {
+                s = serverSocket.accept();
+                //Thread t = new Client(s);
+                //t.start();
+            }
+            catch(Exception e)
+            {
+                System.out.println(" Connection fails: " + e);
+            }
+            finally
+            {
+                openSocket.close();
+                System.out.println("Connection to client closed");
 
-            serverSocket.close();
-            System.out.println("Server port closed");
+                serverSocket.close();
+                System.out.println("Server port closed");
+            }
         }
-
-=======
-            System.out.println(" Connection fails: " + e); 
-        }
-        finally
-        {    
-            openSocket.close();
-            System.out.println("Connection to client closed");
-            
-            serverSocket.close();
-            System.out.println("Server port closed");
-        }
-       
->>>>>>> parent of 7487c75... yuppie ya
     }
+
+    public class Client extends Thread
+    {
+        private Socket OpenSocket = null;
+
+        public Client(Socket openSocket)
+        {
+            OpenSocket = openSocket;
+        }
+
+        @Override
+        public void run()
+        {
+            try {
+                String request, response;
+
+                // two I/O streams attached to the server socket:
+                Scanner in;         // Scanner is the incoming stream (requests from a client)
+                PrintWriter out;    // PrintWriter is the outcoming stream (the response of the server)
+                in = new Scanner(OpenSocket.getInputStream());
+                out = new PrintWriter(OpenSocket.getOutputStream(),true);
+                // Parameter true ensures automatic flushing of the output buffer
+
+                // Server keeps listening for request and reading data from the Client,
+                // until the Client sends "stop" requests
+                while(in.hasNextLine())
+                {
+                    request = in.nextLine();
+
+                    if(request.equals("stop"))
+                    {
+                        out.println("Good bye, client!");
+                        System.out.println("Log: " + request + " client!");
+                        break;
+                    }
+                    else
+                    {
+                        // server responses
+                        response = new StringBuilder(request).reverse().toString();
+                        out.println(response);
+                        // Log response on the server's console, too
+                        System.out.println("Log: " + response);
+                    }
+                }
+            }
+            catch (IOException ex) {
+                // Handle exception
+            }
+
+        }
+    }
+
+
 }
