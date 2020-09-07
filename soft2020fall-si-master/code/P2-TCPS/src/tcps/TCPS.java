@@ -45,6 +45,7 @@ public class TCPS {
 
     public static void main(String[] args) throws IOException
     {
+
         openSocket = configureServer();
         while(true)
         {
