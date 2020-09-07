@@ -10,20 +10,20 @@ import java.util.Scanner;
 
 /**
  * @author Dora Di
- * 
+ *
  * @param ip
  */
-public class TCPC 
+public class TCPC
 {
     // Three I/O streams attached to the client:
     static Scanner cin;        // incoming stream from the local console
     static PrintWriter out;    // outcoming stream from client to server (the request)
     static Scanner in;         // incoming stream from the server to the client(the response)
-    
+
     public static int PORT = 6666;
-    
+
     public static String request, response;
-        
+
     public static void main(String[] args) throws IOException
     {
         // Server socket
@@ -38,25 +38,25 @@ public class TCPC
             ip =  InetAddress.getByName(null);
             socket = new Socket(ip, PORT);
         }
-        System.out.println("Socket: " + socket);       
-        
+        System.out.println("Socket: " + socket);
+
         try (Scanner cin = new Scanner(System.in);
-            PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
-            Scanner in = new Scanner(socket.getInputStream());)
+             PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
+             Scanner in = new Scanner(socket.getInputStream());)
+        {
+            System.out.println("Client up and running");
+            System.out.println("Send a message or \"stop\" to close connection");
+
+            // User types request from the keyboard and the app sends it to the server
+            while ((request = cin.nextLine()) != null)
             {
-                System.out.println("Client up and running");
-                System.out.println("Send a message or \"stop\" to close connection");
+                // Send the user message to the server
+                out.println(request);
 
-                // User types request from the keyboard and the app sends it to the server
-                while ((request = cin.nextLine()) != null)
-                {
-                    // Send the user message to the server
-                    out.println(request);
-
-                    // Get the response of the Server and print it out to the Client
-                    response = in.nextLine();
-                    System.out.println(response);
-                }
+                // Get the response of the Server and print it out to the Client
+                response = in.nextLine();
+                System.out.println(response);
+            }
         }
         catch (UnknownHostException e)
         {
@@ -70,8 +70,8 @@ public class TCPC
         }
         finally
         {
-            //socket.close();
-            System.out.println("Client closing...");           
+            socket.close();
+            System.out.println("Client closing...");
         }
     }
 }
