@@ -26,7 +26,7 @@ public class TCPS {
     public static ServerSocket serverSocket = null; // Server gets found
     public static Socket openSocket = null;         // Server communicates with the client
 
-    public static Socket configureServer() throws UnknownHostException, IOException {
+    public void start() throws UnknownHostException, IOException {
         // get server's own IP address
         String serverIP = InetAddress.getLocalHost().getHostAddress();
         System.out.println("Server ip: " + serverIP);
@@ -34,47 +34,23 @@ public class TCPS {
         // create a socket at the predefined port
         serverSocket = new ServerSocket(PORT);
 
-        // Start listening and accepting requests on the serverSocket port, blocked until a request arrives
-        openSocket = serverSocket.accept();
-        System.out.println("Server accepts requests at: " + openSocket);
-
-        return openSocket;
-    }
-
-    public static void main(String[] args) throws IOException
-    {
-        openSocket = configureServer();
         while(true)
         {
-            Socket s = null;
-            try
-            {
-                s = serverSocket.accept();
-                //Thread t = new Client(s);
-                //t.start();
-            }
-            catch(Exception e)
-            {
-                System.out.println(" Connection fails: " + e);
-            }
-            finally
-            {
-                openSocket.close();
-                System.out.println("Connection to client closed");
-
-                serverSocket.close();
-                System.out.println("Server port closed");
-            }
+            // Start listening and accepting requests on the serverSocket port, blocked until a request arrives
+            openSocket = serverSocket.accept();
+            new Client(openSocket).start();
+            System.out.println("Server accepts requests at: " + openSocket);
         }
+
     }
 
     public class Client extends Thread
     {
-        private Socket OpenSocket = null;
+        private Socket openSocket = null;
 
-        public Client(Socket openSocket)
+        public Client(Socket socket)
         {
-            OpenSocket = openSocket;
+            openSocket = socket;
         }
 
         @Override
@@ -86,8 +62,8 @@ public class TCPS {
                 // two I/O streams attached to the server socket:
                 Scanner in;         // Scanner is the incoming stream (requests from a client)
                 PrintWriter out;    // PrintWriter is the outcoming stream (the response of the server)
-                in = new Scanner(OpenSocket.getInputStream());
-                out = new PrintWriter(OpenSocket.getOutputStream(),true);
+                in = new Scanner(openSocket.getInputStream());
+                out = new PrintWriter(openSocket.getOutputStream(),true);
                 // Parameter true ensures automatic flushing of the output buffer
 
                 // Server keeps listening for request and reading data from the Client,
@@ -118,6 +94,13 @@ public class TCPS {
 
         }
     }
+    
+    public static void main(String[] args) throws IOException
+    {
+        TCPS server = new TCPS();
+        server.start();
+    }
+
 
 
 }
