@@ -10,10 +10,10 @@ import java.util.Scanner;
 
 /**
  * @author Dora Di
- * 
+ *
  * @param ip
  */
-public class TCPC 
+public class TCPC extends Thread
 {
     // Three I/O streams attached to the client:
     static Scanner cin;        // incoming stream from the local console
