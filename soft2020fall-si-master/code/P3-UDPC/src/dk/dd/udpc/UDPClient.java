@@ -13,9 +13,11 @@ import java.util.Scanner;
 public class UDPClient 
 {
     private static final int serverPort = 7777;
-       
+
+    // Some file data??
+    public static byte[] fileData = new byte[256];
+
     // buffers for the messages
-    public static String message;
     private static byte[] dataIn = new byte[256];
     private static byte[] dataOut = new byte[256];  
     
@@ -34,7 +36,7 @@ public class UDPClient
         Scanner scan = new Scanner(System.in);
         System.out.println("Type message: ");
 
-        while((message = scan.nextLine()) != null)
+        while(fileData != null)
         {
             sendRequest(serverIP);            
             receiveResponse();
@@ -44,10 +46,11 @@ public class UDPClient
     
     public static void sendRequest(InetAddress serverIP) throws IOException
     {
-        //clientSocket = new DatagramSocket();        
-        dataOut = message.getBytes();
+        //clientSocket = new DatagramSocket();
+        dataOut = fileData;
         requestPacket = new DatagramPacket(dataOut, dataOut.length, serverIP, serverPort);
-        clientSocket.send(requestPacket); 
+        clientSocket.send(requestPacket);
+        System.out.println("Data sent to server!");
     }
     
     public static void receiveResponse() throws IOException
@@ -56,6 +59,6 @@ public class UDPClient
         responsePacket = new DatagramPacket(dataIn, dataIn.length);
         clientSocket.receive(responsePacket);
         String message = new String(responsePacket.getData(), 0, responsePacket.getLength());       
-        System.out.println("Response from Server: " + message);      
+        System.out.println("Response from Server: Thanks for the data");
     }    
 }

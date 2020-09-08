@@ -13,7 +13,7 @@ public class UDPServer
     
     // buffers for the messages
     private static byte[] dataIn = new byte[128];
-    private static byte[] dataOut = new byte[128];  
+    private static byte[] dataOut = new byte[128];
     
     // In UDP messages are encapsulated in packages and sent over sockets
     private static DatagramPacket requestPacket;    
@@ -23,7 +23,7 @@ public class UDPServer
 
     public static void main(String[] args) throws Exception
     {   
-        String messageIn, messageOut;
+        byte[] fileDataIn, fileDataOut;
         try
         {
             String serverIP = InetAddress.getLocalHost().getHostAddress();
@@ -31,11 +31,12 @@ public class UDPServer
             serverSocket = new DatagramSocket(serverPort);
             while(true)
             {
-               System.out.println("Server " + serverIP + " running ...");  
-               messageIn = receiveRequest();
-               if (messageIn.equals("stop")) break;
-               messageOut = processRequest(messageIn);
-               sendResponse(messageOut);
+               System.out.println("Server " + serverIP + " running ...");
+                fileDataIn = receiveRequest();
+               if (fileDataIn == null) break;
+                // Some file data??
+                fileDataOut = new byte[256];
+               sendResponse(fileDataOut);
             } 
         }
         catch(Exception e)
@@ -49,21 +50,21 @@ public class UDPServer
         }
     }
     
-    public static String receiveRequest() throws IOException
+    public static byte[] receiveRequest() throws IOException
     {
           requestPacket = new DatagramPacket(dataIn, dataIn.length);
           serverSocket.receive(requestPacket);
-          String message = new String(requestPacket.getData(), 0, requestPacket.getLength());
-          System.out.println("Request: " + message);   
-          return message;
+
+          return requestPacket.getData();
     }
     
-    public static String processRequest(String message)
-    {
-        return message.toUpperCase();
-    }
+    //public static String processRequest(byte[] fileDataIn)
+    //{
+
+
+    //}
     
-    public static void sendResponse(String message) throws IOException
+    public static void sendResponse(byte[] fileData) throws IOException
     {
         InetAddress clientIP;
         int clientPort;
@@ -71,10 +72,9 @@ public class UDPServer
         clientIP = requestPacket.getAddress();
         clientPort = requestPacket.getPort();
         System.out.println("Client port: " + clientPort);
-        System.out.println("Response: " + message); 
-        dataOut = message.getBytes();
+        dataOut = fileData;
         responsePacket = new DatagramPacket(dataOut, dataOut.length, clientIP, clientPort);
         serverSocket.send(responsePacket);
-        System.out.println("Message sent back " + message);
+        System.out.println("Data sent to Client!");
     }    
 }
