@@ -58,7 +58,6 @@ public class UDPClient
         //clientSocket = new DatagramSocket();
         responsePacket = new DatagramPacket(dataIn, dataIn.length);
         clientSocket.receive(responsePacket);
-        String message = new String(responsePacket.getData(), 0, responsePacket.getLength());       
         System.out.println("Response from Server: Thanks for the data");
     }    
 }

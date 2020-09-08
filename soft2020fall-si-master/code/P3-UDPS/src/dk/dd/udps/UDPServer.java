@@ -52,10 +52,10 @@ public class UDPServer
     
     public static byte[] receiveRequest() throws IOException
     {
-          requestPacket = new DatagramPacket(dataIn, dataIn.length);
-          serverSocket.receive(requestPacket);
-
-          return requestPacket.getData();
+        requestPacket = new DatagramPacket(dataIn, dataIn.length);
+        serverSocket.receive(requestPacket);
+        System.out.println("Data received from client!");
+        return requestPacket.getData();
     }
     
     //public static String processRequest(byte[] fileDataIn)
