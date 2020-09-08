@@ -19,7 +19,7 @@ public class UDPClient
     private static final int serverPort = 7777;
 
     // buffers for the messages
-    private static byte[] dataIn = new byte[256];
+    private static byte[] dataIn = new byte[12716];
     
     // In UDP messages are encapsulated in packages and sent over sockets
     private static DatagramPacket requestPacket;    
@@ -38,6 +38,7 @@ public class UDPClient
         outputStream.flush();
         byte[] fileDataBuffer = outputStream.toByteArray();
 
+
         while(fileDataBuffer != null)
         {
             sendRequest(serverIP, fileDataBuffer);
@@ -55,9 +56,9 @@ public class UDPClient
     
     public static void receiveResponse() throws IOException
     {
-        //clientSocket = new DatagramSocket();
         responsePacket = new DatagramPacket(dataIn, dataIn.length);
         clientSocket.receive(responsePacket);
         System.out.println("Response from Server: Thanks for the data");
+        System.out.println(responsePacket.getData().length);
     }    
 }

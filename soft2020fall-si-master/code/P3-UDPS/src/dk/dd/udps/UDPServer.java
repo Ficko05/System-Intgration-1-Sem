@@ -32,10 +32,10 @@ public class UDPServer
             while(true)
             {
                System.out.println("Server " + serverIP + " running ...");
-                fileDataIn = receiveRequest();
+               fileDataIn = receiveRequest();
                if (fileDataIn == null) break;
                 // Some file data??
-                fileDataOut = new byte[256];
+                fileDataOut = fileDataIn;
                sendResponse(fileDataOut);
             } 
         }
