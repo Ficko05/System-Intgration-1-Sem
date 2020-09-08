@@ -12,8 +12,8 @@ public class UDPServer
     private static final int serverPort = 7777;
     
     // buffers for the messages
-    private static byte[] dataIn = new byte[128];
-    private static byte[] dataOut = new byte[128];
+    private static byte[] dataIn = new byte[12716];
+    private static byte[] dataOut = new byte[12716];
     
     // In UDP messages are encapsulated in packages and sent over sockets
     private static DatagramPacket requestPacket;    
