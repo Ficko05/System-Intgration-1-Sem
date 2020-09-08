@@ -1,61 +1,82 @@
 package dk.dd.udpc;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.Scanner;
+import java.io.*;
+import java.awt.image.*;
+import java.sql.SQLOutput;
+import javax.imageio.*;
 
 /**
  *
  * @author Dora Di
  */
-public class UDPClient 
+
+public class UDPClient
 {
+    // Client needs to know server identification, <IP:port>
     private static final int serverPort = 7777;
-       
+
     // buffers for the messages
-    public static String message;
-    private static byte[] dataIn = new byte[256];
-    private static byte[] dataOut = new byte[256];  
-    
+    private static byte[] dataIn = new byte[1024];
+    private static byte[] dataOut = new byte[1024];
+
     // In UDP messages are encapsulated in packages and sent over sockets
-    private static DatagramPacket requestPacket;    
-    private static DatagramPacket responsePacket;  
+    private static DatagramPacket requestPacket;
+    private static DatagramPacket responsePacket;
     private static DatagramSocket clientSocket;
-    
+
     public static void main(String[] args) throws IOException
     {
-        // Enter server's IP address as a parameter from Run/Edit Configuration/Application/Program Arguments
-        clientSocket = new DatagramSocket(); 
+        clientSocket = new DatagramSocket();
         InetAddress serverIP = InetAddress.getByName(args[0]);
         System.out.println(serverIP);
-        
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Type message: ");
 
-        while((message = scan.nextLine()) != null)
-        {
-            sendRequest(serverIP);            
-            receiveResponse();
-        }
-        clientSocket.close(); 
+
+        dataOut = imageToBinary("/Users/malenehansen/IdeaProjects/SI_UDP/src/123.jpg");
+
+
+        sendImage(serverIP);
+        receiveResponse();
+
+        clientSocket.close();
     }
-    
-    public static void sendRequest(InetAddress serverIP) throws IOException
+
+    public static void sendImage(InetAddress serverIP) throws IOException
     {
-        //clientSocket = new DatagramSocket();        
-        dataOut = message.getBytes();
+
         requestPacket = new DatagramPacket(dataOut, dataOut.length, serverIP, serverPort);
-        clientSocket.send(requestPacket); 
+        clientSocket.send(requestPacket);
     }
-    
+
     public static void receiveResponse() throws IOException
     {
         //clientSocket = new DatagramSocket();
         responsePacket = new DatagramPacket(dataIn, dataIn.length);
         clientSocket.receive(responsePacket);
-        String message = new String(responsePacket.getData(), 0, responsePacket.getLength());       
-        System.out.println("Response from Server: " + message);      
-    }    
+        dataIn = responsePacket.getData();
+        System.out.println("Response from Server: " + dataIn.toString());
+    }
+
+    public static byte[] imageToBinary(String fileName) throws IOException {
+
+        File file = new File(fileName);
+
+        byte[] bytesArray = new byte[(int) file.length()];
+
+        FileInputStream fis = new FileInputStream(file);
+        System.out.println("Data sent: " + bytesArray.toString());
+
+
+        fis.close();
+
+        return bytesArray;
+
+
+    }
+
 }
