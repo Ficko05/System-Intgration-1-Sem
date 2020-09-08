@@ -1,5 +1,9 @@
 package dk.dd.udps;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.*;
 
@@ -9,11 +13,11 @@ import java.net.*;
  */
 public class UDPServer
 {
-    private static final int serverPort = 7777;
+    private static final int serverPort = 7770;
     
     // buffers for the messages
-    private static byte[] dataIn = new byte[128];
-    private static byte[] dataOut = new byte[128];  
+    private static byte[] dataIn = new byte[64768];
+    private static byte[] dataOut = new byte[64768];
     
     // In UDP messages are encapsulated in packages and sent over sockets
     private static DatagramPacket requestPacket;    
@@ -31,11 +35,17 @@ public class UDPServer
             serverSocket = new DatagramSocket(serverPort);
             while(true)
             {
-               System.out.println("Server " + serverIP + " running ...");  
-               messageIn = receiveRequest();
-               if (messageIn.equals("stop")) break;
-               messageOut = processRequest(messageIn);
-               sendResponse(messageOut);
+                DatagramPacket recv_packet = new DatagramPacket(dataIn, dataIn.length);
+
+
+                serverSocket.receive(recv_packet);
+
+                byte[] buff = recv_packet.getData();
+                ByteArrayInputStream bis = new ByteArrayInputStream(buff);
+                System.out.println(bis);
+                BufferedImage bImage2 = ImageIO.read(bis);
+                ImageIO.write(bImage2, "jpg", new File("output.jpg") );
+                System.out.println("resived image is stored in " + System.getProperty("user.dir") + "/output.jpg");
             } 
         }
         catch(Exception e)
