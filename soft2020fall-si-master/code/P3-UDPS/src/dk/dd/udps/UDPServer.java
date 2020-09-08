@@ -13,7 +13,7 @@ import java.net.*;
  */
 public class UDPServer
 {
-    private static final int serverPort = 7777;
+    private static final int serverPort = 7770;
     
     // buffers for the messages
     private static byte[] dataIn = new byte[64768];
@@ -44,7 +44,8 @@ public class UDPServer
                 ByteArrayInputStream bis = new ByteArrayInputStream(buff);
                 System.out.println(bis);
                 BufferedImage bImage2 = ImageIO.read(bis);
-                ImageIO.write(bImage2, "jpg", new File("C:/Users/sebastian/Documents/skole/System intergration/Assignement 1/System-Intgration-1-Sem/soft2020fall-si-master/code/P3-UDPS/src/dk/dd/udps/output.jpg") );
+                ImageIO.write(bImage2, "jpg", new File("output.jpg") );
+                System.out.println("resived image is stored in " + System.getProperty("user.dir") + "/output.jpg");
             } 
         }
         catch(Exception e)

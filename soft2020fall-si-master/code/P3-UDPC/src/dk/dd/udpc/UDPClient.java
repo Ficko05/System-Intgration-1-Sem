@@ -17,7 +17,7 @@ import java.util.Scanner;
  */
 public class UDPClient 
 {
-    private static final int serverPort = 7777;
+    private static final int serverPort = 7770;
        
     // buffers for the messages
     public static String message;
@@ -40,7 +40,8 @@ public class UDPClient
         clientSocket = new DatagramSocket(); 
         InetAddress serverIP = InetAddress.getByName(args[0]);
         System.out.println(serverIP);
-            BufferedImage img = ImageIO.read(new File("C:/Users/sebastian/Documents/skole/System intergration/Assignement 1/System-Intgration-1-Sem/soft2020fall-si-master/code/P3-UDPC/src/test.jpg"));
+
+            BufferedImage img = ImageIO.read(new File("test.jpg"));
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(img, "jpg", baos);
             baos.flush();
