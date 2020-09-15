@@ -32,16 +32,9 @@ public class Customer
         this.amount = amount;
     }
 
-    public Long getAccnum() {
-        return this.accnum;
-    }
+    public Long getAccnum() { return this.accnum; }
 
-    public String getName() {
-        return this.name;
-    }
+    public String getName() { return this.name; }
 
-    public Double getAmount() {
-        return this.amount;
-    }
-
+    public Double getAmount() { return this.amount; }
 }
