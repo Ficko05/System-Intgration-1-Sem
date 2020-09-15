@@ -19,4 +19,16 @@ public class Customer
     private String name;
     @NonNull
     private Double amount;
+
+    public void setAccnum(Long accnum) {
+        this.accnum = accnum;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
 }
