@@ -31,4 +31,17 @@ public class Customer
     public void setAmount(Double amount) {
         this.amount = amount;
     }
+
+    public Long getAccnum() {
+        return this.accnum;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Double getAmount() {
+        return this.amount;
+    }
+
 }
